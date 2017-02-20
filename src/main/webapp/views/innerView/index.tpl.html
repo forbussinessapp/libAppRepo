@@ -1,0 +1,198 @@
+
+<!-- Using ng-view in index.html and routing the same page by $routeProvider is caused infinite loop.-->
+<!-- To solve this specific problem index.tpl.html page is created. -->
+<div class="panel panel-default">
+
+    <!-- Creation update model opens in this field -->
+    <div class="formcontainer">
+        <div class="row">
+            <div class="floatRight">
+                <input type="submit" value="Add New Book" class="btn btn-primary btn-sm" ng-click="openModal(book)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Book table header is representing in this field -->
+    <div class="panel-heading">
+        <span class="lead">List of Books</span>
+    </div>
+
+    <!-- Errors returned from server are represented in this field through errMode attribute
+         Used for findAll mode -->
+    <div class="row">
+        <div class="form-group col-md-12">
+            <div class="col-md-7">
+                <div class="has-error" ng-show="errorMode">
+                    <span >{{errMsg}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tablecontainer" >
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Author Name</th>
+                <th>Author Surname</th>
+                <th width="20%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="book in books">
+                <td><span>{{book.title}}</span></td>
+                <td><span>{{book.author.firstName}}</span></td>
+                <td><span>{{book.author.lastName}}</span></td>
+                <td>
+                    <button type="button" ng-click="editModal(book)" class="btn btn-success custom-width">Edit</button>
+                    <!--<button type="button" ng-click="openModel(book)" class="btn btn-danger custom-width"></button>-->
+                    <input type="submit" value="Delete" class="btn btn-danger custom-width" ng-click="openModal(book)">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create, update and delete operations are performed through this Modal Dialog -->
+<!-- Modal dialog is binding with directive via show scope, modalPanel attribute is managed by controller -->
+<modal-dialog show='modalPanel' class="dialog" callback-fn="callbackFetch()">
+
+    <div class="formcontainer">
+        <form  class="form-horizontal" id="myForm" name="myForm" class="form-horizontal">
+
+            <!-- Modal Dialog Header Field
+                 Header is managed by controller and view through ng-show and ng-hide data binding -->
+            <div class="panel panel-default" >
+                <div class="panel-heading">
+                    <span class="lead">{{modelHeader}}</span>
+                </div>
+            </div>
+
+            <!-- Errors returned from server are represented in this field through errMode attribute
+                 Used for create, update and delete mode -->
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="col-md-7">
+                        <div class="has-error" ng-show="errMode">
+                            <span >{{errMessage}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info returned from server are represented in this field through infoMode attribute
+                 Used for create, update and delete mode -->
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="col-md-7">
+                        <div class="text-primary" ng-show="infoMode">
+                            <span >{{info}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- For some reason when captcha is on the screen:  -->
+            <!-- http pendingRequests aren't able to catch by directive and gifs aren't able to shown -->
+            <!-- In order to solve this specific problem captcha is represented first and after captcha is accepted other fields are represented. -->
+
+            <!-- captchaMode, createMode, deleteMode and editMode attributes are used for managing show-hide bindings -->
+            <!-- ngModel directive binds inputs -->
+            <!-- $dirty, $error, $invalid, $pristine are setting related css classes on the element -->
+
+            <!-- Book Title is represented in this field for create and update mode -->
+            <div class="row" ng-hide="captchaMode || deleteMode" ng-show="editMode || createMode">
+                <div class="form-group col-md-12">
+                    <label class="col-md-2 control-lable" for="file">Title:</label>
+                    <div class="col-md-7">
+                        <input type="text" ng-model="book.title" id="title" name="title" class="title form-control input-sm" placeholder="Enter book title" required ng-minlength="2"
+                               required ng-pattern="/^(\D)+$/"/>
+                        <div class="has-error" ng-show="myForm.$dirty">
+                            <span ng-show="myForm.title.$error.required">This is a required field</span>
+                            <span ng-show="myForm.title.$error.minlength">Minimum length required is 2</span>
+                            <span ng-show="myForm.title.$error.pattern">This is required only charachter</span>
+                            <span ng-show="myForm.title.$invalid">This field is invalid </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author first name is represented in this field for create and update mode -->
+            <div class="row"  ng-hide="captchaMode || deleteMode" ng-show="editMode || createMode">
+                <div class="form-group col-md-12">
+                    <label class="col-md-2 control-lable" for="file">Author Name:</label>
+                    <div class="col-md-7">
+                        <input type="text" ng-model="book.author.firstName" id="firstName" name="firstName" class="firstName form-control input-sm" placeholder="Enter author name"
+                               required ng-minlength="2" required ng-pattern="/^(\D)+$/"/>
+                        <div class="has-error" ng-show="myForm.$dirty">
+                            <span ng-show="myForm.firstName.$error.required">This is a required field</span>
+                            <span ng-show="myForm.firstName.$error.minlength">Minimum length required is 2</span>
+                            <span ng-show="myForm.firstName.$error.pattern">This is required only charachter</span>
+                            <span ng-show="myForm.firstName.$invalid">This field is invalid </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author last name is represented in this field for create and update mode -->
+            <div class="row"  ng-hide="captchaMode || deleteMode" ng-show="editMode || createMode">
+                <div class="form-group col-md-12">
+                    <label class="col-md-2 control-lable" for="file">Author Lastname:</label>
+                    <div class="col-md-7">
+                        <input type="text" ng-model="book.author.lastName" id="lastName" name="lastName" class="lastName form-control input-sm" placeholder="Enter author lastname"
+                               required ng-minlength="2" required ng-pattern="/^(\D)+$/"/>
+                        <div class="has-error" ng-show="myForm.$dirty">
+                            <span ng-show="myForm.lastName.$error.required">This is a required field</span>
+                            <span ng-show="myForm.lastName.$error.minlength">Minimum length required is 2</span>
+                            <span ng-show="myForm.lastName.$error.pattern">This is required only charachter</span>
+                            <span ng-show="myForm.lastName.$invalid">This field is invalid </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row"  ng-hide="captchaMode || editMode || createMode" ng-show="deleteMode">
+                <div class="form-group col-md-12">
+                    <label class="col-md-2 control-lable">Do you really want to delete this book?</label><br/><br/>
+                </div>
+            </div>
+
+            <!-- Form actions are performed through ng-click directive in this field -->
+            <div class="row">
+
+                <!-- Creation -->
+                <div class="form-actions floatRight" ng-show="createMode" ng-hide="editMode || deleteMode || captchaMode">
+                    <input type="submit" value="Add New Book" ng-click="createBook(book)" class="btn btn-primary btn-sm" ng-disabled="myForm.$invalid">
+                    <button type="button" ng-click="reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+                </div>
+
+                <!-- Updating -->
+                <div class="form-actions floatRight" ng-show="editMode" ng-hide="createMode || deleteMode || captchaMode">
+                    <input type="submit" value="Update" ng-click="updateBook(book)" class="btn btn-primary btn-sm" ng-disabled="myForm.$invalid">
+                </div>
+
+                <!-- Deletion -->
+                <div class="form-actions floatRight" ng-show="deleteMode" ng-hide="editMode || createMode || captchaMode">
+                    <input type="submit" value="YES" ng-click="deleteBook(book)" class="btn btn-primary btn-sm">
+                    <button type="button" ng-click="" class="btn btn-warning btn-sm">NO</button>
+                </div>
+            </div>
+
+            <!-- Captcha is represented in this field for create and delete mode only when captcha mode is on. -->
+            <!-- Captcha performs its own validation. -->
+            <div class="row" ng-show="captchaMode" ng-hide="captchaModeOff">
+                <div class="form-group col-md-12">
+                    <label class="col-md-2 control-lable">Please provide the string into input field and click button "Done!" : </label>
+                    <div class="col-md-7">
+                        <div id="captcha" name="captcha"/>
+                    </div>
+                </div>
+                <div class="form-actions floatRight">
+                    <button type="button"  ng-click="continue()" class="btn btn-warning btn-sm" >Continue ></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</modal-dialog>

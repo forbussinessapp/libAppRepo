@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="ngdemo" xmlns:spring="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="style/css/bootstrap.css"/>
+    <link rel="stylesheet" href="style/css/toastr.css"/>
+    <link rel="stylesheet" href="style/css/app.css"/>
+    <link rel="stylesheet" href="style/css/loading.css"/>
+    <title>Library Management</title>
+</head>
+
+<body class="ng-cloak" ng-controller="bookCtrl">
+    <div class="generic-container">
+        <div class="panel panel-default" >
+            <div class="panel-heading">
+                <span class="lead">Library Management</span>
+            </div>
+        </div>
+        <!-- Ajax request loading gif -->
+        <div data-loading id="loader">
+            <p id="ajax-loader">
+                <img src="style\img\ajax-loader-.gif"><br/><br/>
+                <span id="loader-label">Loading, please wait...</span>
+            </p>
+        </div>
+
+        <!-- ngView directive complements the $route service by including index.tpl.html into the main layout (index.html) file -->
+        <div class="container" ng-view></div>
+    </div>
+
+    <script src="script/vendor/jquery-1.9.1.js"></script>
+    <script src="script/vendor/bootstrap.js"></script>
+    <script src="script/vendor/angular.js"></script>
+    <script src="script/vendor/toastr.js"></script>
+    <script src="script/app.js"></script>
+    <script src="script/common/service/main-service.js"></script>
+    <script src="script/common/service/book-service.js"></script>
+    <script src="script/common/controller/main-controller.js"></script>
+    <script src="script/common/controller/book-controller.js"></script>
+    <script src="script/common/directive/main-directive.js"></script>
+    <script src="views/innerView/index-tpl-directive.js"></script>
+    <script src="script/common/directive/loading-directive.js"></script>
+    <script src="script/vendor/Captcha.js"></script>
+</body>
+</html>
