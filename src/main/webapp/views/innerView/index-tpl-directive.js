@@ -21,8 +21,7 @@ directives.directive('modalDialog', [ function() {
                 scope.dialogStyle.width = attrs.width;
             if (attrs.height)
                 scope.dialogStyle.height = attrs.height;
-
-            /*Used for sending message to controller*/
+            
             scope.hideModal = function () {
                 scope.show = false;
                 scope.callbackFn()
